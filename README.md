@@ -4,6 +4,9 @@ Python Version of Andrew Welter's Hatebase Wrapper
 # Examples
 #### Get All the Hate Speech in English About Nationality 
 ```
+from json import loads
+from hatebase import HatebaseAPI
+
 hatebase = HatebaseAPI({"key": key})
 filters = {'about_nationality': '1', 'language': 'eng'}
 output = "json"
@@ -16,6 +19,9 @@ response = loads(response)
 
 #### Get All Arabic Vocabulary
 ```
+from json import loads
+from hatebase import HatebaseAPI
+
 hatebase = HatebaseAPI({"key": key})
 filters = {"language": "ara"}
 output = "json"

@@ -38,3 +38,7 @@ For more documentation on the API check out https://www.hatebase.org/connect_api
 To test the package run
 ```
 python -m unittest hatebase.tests.test
+```
+
+# Python Version
+Tested with Python 2.7.9

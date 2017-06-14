@@ -1,4 +1,5 @@
 from requests import get
+from urllib import quote
 
 class HatebaseAPI:
 
@@ -22,15 +23,15 @@ class HatebaseAPI:
 
         # settings connection timeout to 30 seconds here rather than letting it be indefinite
         # doesn't seem right to let it linger indefinitely waiting for a connection
-        response = get(url, timeout(30, 120))
+        response = get(url, timeout=(30, 120))
 
         return response.text
 
 
-    """
     def format_query(self, parameters, primary='%3D', secondary='%7C'):
 
         query = ""
-        for key in parameters:
-    """     
- 
+        for key, value in parameters.items():
+            pair = [quote(key), quote(value)]
+            query += primary.join(pair) + secondary
+        return query.rstrip(secondary)

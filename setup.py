@@ -11,7 +11,7 @@ setup(
   author_email = 'daniel.j.dufour@gmail.com',
   url = 'https://github.com/DanielJDufour/hatebase',
   download_url = 'https://github.com/DanielJDufour/hatebase/tarball/download',
-  keywords = ['conflict', 'language', 'nlp', 'python', 'tagging'],
+  keywords = ['conflict', 'hatespeech', 'language', 'nlp', 'python', 'tagging'],
   classifiers = [],
   install_requires=["requests"]
 )

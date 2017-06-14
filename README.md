@@ -1,6 +1,11 @@
 # hatebase
 Python Version of Andrew Welter's Hatebase Wrapper
 
+# Requirements
+```
+pip install requests
+```
+
 # Examples
 #### Get All the Hate Speech in English About Nationality 
 ```

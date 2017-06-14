@@ -29,7 +29,6 @@ class TestSightings(unittest.TestCase):
     def test_sightings(self):
         key = raw_input("What's your API Key?\n")
         hatebase = HatebaseAPI({"key": key})
-        #filters = {'about_nationality': '1', 'language': 'eng'}
         filters = {"language": "ara"}
         output = "json"
         query_type = "vocabulary"

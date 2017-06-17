@@ -46,4 +46,4 @@ python -m unittest hatebase.tests.test
 ```
 
 # Python Version
-Tested with Python 2.7.9
+Tested with Python 2.7.9 on Ubuntu 16.04

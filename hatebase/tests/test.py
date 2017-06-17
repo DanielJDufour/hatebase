@@ -24,7 +24,7 @@ class TestSightings(unittest.TestCase):
         # convert to Python object
         response = loads(response)
 
-        self.assertTrue(response['number_of_results'] > 54239)
+        self.assertTrue(int(response['number_of_results']) > 54239)
         self.assertEqual(len(response['data']['datapoint']), 100)
         
         
@@ -47,7 +47,7 @@ class TestSightings(unittest.TestCase):
         # convert to Python object
         response = loads(response)
 
-        self.assertTrue(response['number_of_results'] >= 18)
+        self.assertTrue(int(response['number_of_results']) >= 18)
         self.assertEqual(len(response['data']['datapoint']), int(response['number_of_results_on_this_page']))
  
 

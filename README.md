@@ -1,6 +1,11 @@
 # hatebase
 Python Version of Andrew Welter's Hatebase Wrapper
 
+# Install
+```
+pip install hatebase
+```
+
 # Requirements
 ```
 pip install requests

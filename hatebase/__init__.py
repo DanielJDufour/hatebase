@@ -1,5 +1,8 @@
 from requests import get
-from urllib import quote
+try:
+    from urllib import quote
+except:
+    from urllib.parse import quote
 
 class HatebaseAPI:
 

@@ -9,7 +9,12 @@ import unittest
 class TestSightings(unittest.TestCase):
 
     def test_about_nationality(self):
-        key = raw_input("What's your API Key?\n")
+
+        if python_version == 3:
+            key = input("What's your API Key?\n")
+        elif python_version == 2:
+            key = raw_input("What's your API Key?\n")
+
         hatebase = HatebaseAPI({"key": key})
         filters = {'about_nationality': '1', 'language': 'eng'}
         output = "json"
@@ -27,7 +32,12 @@ class TestSightings(unittest.TestCase):
 class TestSightings(unittest.TestCase):
 
     def test_sightings(self):
-        key = raw_input("What's your API Key?\n")
+
+        if python_version == 3:
+            key = input("What's your API Key?\n")
+        elif python_version == 2:
+            key = raw_input("What's your API Key?\n")
+ 
         hatebase = HatebaseAPI({"key": key})
         filters = {"language": "ara"}
         output = "json"

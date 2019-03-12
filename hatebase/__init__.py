@@ -1,37 +1,127 @@
-from requests import get
+import requests
+
 try:
     from urllib import quote
 except:
     from urllib.parse import quote
 
-class HatebaseAPI:
 
+class HatebaseAPI:
     base_url = 'https://api.hatebase.org'
     key = None
-    version = '3'
+    version = '4-2'
+    token = None
+    debug = False
+    #payload = None
+    headers = {
+        'Content-Type': "application/x-www-form-urlencoded",
+        'cache-control': "no-cache"
+    }
 
     def __init__(self, settings):
 
         if "key" not in settings:
-            raise Exception('Make sure you are passing in the correct parameters')
+            raise Exception('Make sure to pass in the key as mandatory parameter')
 
         self.key = settings['key']
 
         if "version" in settings:
             self.version = settings['version']
 
-    def performRequest(self, filters, output="xml", query_type='vocabulary'):
+        if "debug" in settings:
+            self.debug = settings["debug"]
 
-        url = self.base_url + '/v' + self.version + '-0/' + self.key + '/' + query_type + '/' + output + '/' + self.format_query(filters)
+        self.authenticate()
 
-        # settings connection timeout to 30 seconds here rather than letting it be indefinite
-        # doesn't seem right to let it linger indefinitely waiting for a connection
-        response = get(url, timeout=(30, 120))
+    def authenticate(self):
 
-        return response.text
+        url = self.base_url + '/' + self.version + '/authenticate'
+        payload = "api_key=" + self.key
 
+        # perform authentication request
+        response = requests.post(url, data=payload, headers=self.headers)
 
-    def format_query(self, parameters, primary='%3D', secondary='%7C'):
+        try:
+            token = response.json()["result"]["token"]
+        except KeyError as e:
+            print("Please check your API-Key, Authentication did nod respond with a token.")
+
+        if token is not None:
+            self.token = response.json()["result"]["token"]
+        else:
+            raise Exception('Authentication failed for some reason')
+
+        if self.debug == True:
+            print("response text: {}".format(response.text))
+            print("token: {}".format(token))
+
+    def analyze(self, data, format="json"):
+
+        url = self.base_url + '/' + self.version + '/analyze'
+        payload = "token=" + self.token + "&format=" + format + "&" + self.format_query(data)
+        if self.debug == True:
+            print("url: {}\npayload: {}".format(url, payload))
+        # perform query
+        response = requests.post(url, data=payload, headers=self.headers)
+        if self.debug == True:
+            print("response: {}".format(response))
+        resp_json = response.json()
+        return resp_json, resp_json["request_id"], resp_json["expires_on"]
+
+    def getAnalysis(self, filters, format="json"):
+
+        url = self.base_url + '/' + self.version + '/get_vocabulary_details'
+        payload = "token=" + self.token + "&format=" + format + "&" + self.format_query(filters)
+        if self.debug == True:
+            print("url: {}\npayload: {}".format(url, payload))
+        # perform query
+        response = requests.post(url, data=payload, headers=self.headers)
+        if self.debug == True:
+            print("response: {}".format(response))
+        resp_json = response.json()
+        return resp_json
+
+    def getVocabulary(self, filters, format="json"):
+
+        url = self.base_url + '/' + self.version + '/get_vocabulary'
+        payload = "token=" + self.token + "&format=" + format + "&" + self.format_query(filters)
+        if self.debug == True:
+            print("url: {}\npayload: {}".format(url, payload))
+        # perform query
+        response = requests.post(url, data=payload, headers=self.headers)
+        if self.debug == True:
+            print("response: {}".format(response))
+        resp_json = response.json()
+        return resp_json, resp_json["result"], resp_json["number_of_pages"], \
+               resp_json["number_of_results"], resp_json["language"]
+
+    def getVocabularyDetails(self, filters, format="json"):
+
+        url = self.base_url + '/' + self.version + '/get_vocabulary_details'
+        payload = "token=" + self.token + "&format=" + format + "&" + self.format_query(filters)
+        if self.debug == True:
+            print("url: {}\npayload: {}".format(url, payload))
+        # perform query
+        response = requests.post(url, data=payload, headers=self.headers)
+        if self.debug == True:
+            print("response: {}".format(response))
+        resp_json = response.json()
+        return resp_json
+
+    def getSightings(self, filters, format="json"):
+
+        url = self.base_url + '/' + self.version + '/get_sightings'
+        payload = "token=" + self.token + "&format=" + format + "&" + self.format_query(filters)
+        if self.debug == True:
+            print("url: {}\npayload: {}".format(url, payload))
+        # perform query
+        response = requests.post(url, data=payload, headers=self.headers)
+        if self.debug == True:
+            print("response: {}".format(response))
+        resp_json = response.json()
+        return resp_json
+
+    def format_query(self, parameters, primary='=', secondary='&'):
 
         query = ""
         for key, value in parameters.items():

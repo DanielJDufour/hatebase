@@ -7,6 +7,13 @@ except:
 
 
 class HatebaseAPI:
+    """HatebaseAPI is a python class to perform queries against the hatebase api
+
+    HatebaseAPI allows queries against the current hatebase api endpoints.
+    It expects your own personal hatebase-api key upon class initialization.
+    Afterwards it offers various functions which will perform queries and
+    will return json objects with the query results.
+    """
     base_url = 'https://api.hatebase.org'
     key = None
     version = '4-2'
@@ -34,6 +41,11 @@ class HatebaseAPI:
         self.authenticate()
 
     def authenticate(self):
+        """authenticate authenticates your api key against the hatebase api.
+
+        authenticate will run silently and won't return anything if all goes well.
+        If the authentication fails, an error will be raised.
+        """
 
         url = self.base_url + '/' + self.version + '/authenticate'
         payload = "api_key=" + self.key
@@ -56,6 +68,25 @@ class HatebaseAPI:
             print("token: {}".format(token))
 
     def analyze(self, data, format="json"):
+        """Analyze custom data with hatebase api
+
+        This function will call the /analyze endpoint of hatebase for analysis with
+        the natural language parsing engine at the heard of Hatebase.
+        An analysis can take quite some time (from minutes to hours), thus this function will
+        not return an immediate result, but a request_id instead.
+        This request_id can be used later to get the performed analysis, once it has finished.
+        (Requests auto-expire within 48 hours.)
+
+        Args:
+            data (dict): a dictionary containing the data content (json) to be analyzed as well optionally
+                the language and country (see hatebase api documentation for details)
+            format:     format of the response (currently only json)
+
+        Returns:
+            response:   the full json response
+            request_id: the request_id of the response
+            expires_on: the expiry date
+        """
 
         url = self.base_url + '/' + self.version + '/analyze'
         payload = "token=" + self.token + "&format=" + format + "&" + self.format_query(data)
@@ -69,8 +100,24 @@ class HatebaseAPI:
         return resp_json, resp_json["request_id"], resp_json["expires_on"]
 
     def getAnalysis(self, filters, format="json"):
+        """getAnalysis gets the analysis results of a previously performed analyze query.
 
-        url = self.base_url + '/' + self.version + '/get_vocabulary_details'
+        (From hatebase-api documentation: he /get_analysis endpoint retrieves the assessment
+        initiated with a prior query to the /analyze endpoint. Analysis can take anywhere
+        from a few minutes to a couple hours, depending on the complexity of the content
+        and the volume of traffic at the time of request.
+        Requests auto-expire within 48 hours
+
+        Args:
+            filters (dict):    dictionary of filters for the get_analysis query. (see hatebase
+                documentation for details). Must contain the "request_id".
+            format:     format of the response (currently only json)
+
+        Returns:
+            response:   the full json response according to the hatebase api.
+        """
+
+        url = self.base_url + '/' + self.version + '/get_analysis'
         payload = "token=" + self.token + "&format=" + format + "&" + self.format_query(filters)
         if self.debug == True:
             print("url: {}\npayload: {}".format(url, payload))
@@ -82,6 +129,25 @@ class HatebaseAPI:
         return resp_json
 
     def getVocabulary(self, filters, format="json"):
+        """get the desired vocabulary / vocabulary entries from hatebase.
+
+        The /get_vocabulary endpoint allows users to download Hatebase's
+        lexicon of multilingual hate speech.
+        Note that resultsets are paginated and that vocabulary is frequently
+        updated based on usage, particularly sightings.
+
+        Args:
+            filters (dict):     dictionary of filters for the get_vocabulary query. (see hatebase
+                documentation for details).
+            format:     format of the response (currently only json)
+
+        Returns:
+            response:   the full json response according to the hatebase api.
+            vocabulary: a list of vocabulary entries (each entry is a dict) for the current page
+            pages:      the total number of result_pages for this query
+            results:    the total numvber of results (vocabulary entries) for this query
+            language:   the language of the vocabulary
+        """
 
         url = self.base_url + '/' + self.version + '/get_vocabulary'
         payload = "token=" + self.token + "&format=" + format + "&" + self.format_query(filters)
@@ -96,6 +162,20 @@ class HatebaseAPI:
                resp_json["number_of_results"], resp_json["language"]
 
     def getVocabularyDetails(self, filters, format="json"):
+        """gets the details of the requested vocabulary_id
+
+        Performs a query against the /get_vocabulary endpoint which
+        allows users to download more detail on a specific term
+        in Hatebase's lexicon of multilingual hate speech.
+
+        Args:
+            filters (dict):     dictionary of filters for the get_vocabulary query. (see hatebase
+                documentation for details).
+            format:     format of the response (currently only json)
+
+        Returns:
+            response:   the full json response according to the hatebase api.
+        """
 
         url = self.base_url + '/' + self.version + '/get_vocabulary_details'
         payload = "token=" + self.token + "&format=" + format + "&" + self.format_query(filters)
@@ -109,6 +189,21 @@ class HatebaseAPI:
         return resp_json
 
     def getSightings(self, filters, format="json"):
+        """gets the sightings of a requested vocabulary_id.
+
+        Performs a query against the /get_sightings endpoint of hatebase.
+        This allows users to download sightings of a Hatebase's vocabulary.
+        Note that resultsets are paginated and do not contain the text
+        from which the sighting was obtained if prohibited by third party terms of service.
+
+        Args:
+            filters (dict):  dictionary of filters for the get_vocabulary query. (see hatebase
+                documentation for details).
+
+            format: format of the response (currently only json)
+        Returns:
+            response:   the full json response according to the hatebase api.
+        """
 
         url = self.base_url + '/' + self.version + '/get_sightings'
         payload = "token=" + self.token + "&format=" + format + "&" + self.format_query(filters)

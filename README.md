@@ -16,42 +16,38 @@ pip install requests
 ### Initialize HatebaseAPI class
 ```
 hatebase = HatebaseAPI({"key": key})
+# for more details, set debug to True
+hatebase = HatebaseAPI({"key": key, "debug": True})
 ```
 
 ### HatebaseAPI getVocabulary
 ```
 # set filters for vocabulary query
 filters = {"language": "eng"}
-output = "json"
+format = "json"
 
-# get response tuple from query
-# response[0] = json_response
-# response[1] = vocabulary_list of that page
-# response[2] = total nr of pages 
-# response[3] = total nr of vocabulary entries
-# response[4] = language
-response = hatebase.getVocabulary(filters=filters, format=output)
+response = hatebase.getVocabulary(filters=filters, format=format)
 
-## alternatively, get the response details directly
-json_response, vocab, pages, total_entries, lang = hatebase.getVocabulary(filters=filters, format=output)
+# get some details from response
+vocablist = response["result"]
+results = response["number_of_results"]
+pages = response["number_of_pages"]
 ```
 
 ### HatebaseAPI getVocabularyDetails
 ``` 
-output = "json"
+format = "json"
 details_filters = {'vocabulary_id': vocab_id}
 
-# getVocagularyDetails only returns the json result
-response = hatebase.getVocabularyDetails(filters=details_filters, format=output)
+response = hatebase.getVocabularyDetails(filters=details_filters, format=format)
 ```
 
 ### HatebaseAPI getSightings
 ``` 
 filters = {'is_about_nationality': '1', 'language': 'eng', 'country_id': 'US'}
-output = "json"
+format = "json"
 
-# getSightings only returns the json result
-response = hatebase.getSightings(filters=filters, format=output)
+response = hatebase.getSightings(filters=filters, format=format)
 ```
 
 ### HatebaseAPI analyze
@@ -72,8 +68,8 @@ from hatebase import HatebaseAPI
 
 hatebase = HatebaseAPI({"key": key})
 filters = {'is_about_nationality': '1', 'language': 'eng', 'country_id': 'US'}
-output = "json"
-json_response = hatebase.getSightings(filters=filters, format=output)
+format = "json"
+json_response = hatebase.getSightings(filters=filters, format=format)
 ```
 
 #### Get All Arabic Vocabulary
@@ -85,16 +81,17 @@ from hatebase import HatebaseAPI
 
 hatebase = HatebaseAPI({"key": key})
 filters = {"language": "ara"}
-output = "json"
+format = "json"
 # initialize list for all vocabulary entry dictionaries
 ara_vocab = []
-response = hatebase.getVocabulary(filters=filters, format=output)
+response = hatebase.getVocabulary(filters=filters, format=format)
+pages = response["number_of_pages"]
 # fill the vocabulary list with all entries of all pages
 # this might take some time...
 for page in range(1, pages+1):
     filters["page"] = str(page) 
-    response = hatebase.getVocabulary(filters=filters, format=output)
-    ara_vocab.append(response[1])
+    response = hatebase.getVocabulary(filters=filters, format=format)
+    ara_vocab.append(response["result"])
 
 # create empty pandas df for all vocabulary entries
 df_ara_vocab = pd.DataFrame()

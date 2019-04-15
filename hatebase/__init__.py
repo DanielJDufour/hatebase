@@ -19,14 +19,12 @@ class HatebaseAPI:
     version = '4-2'
     token = None
     debug = False
-    #payload = None
     headers = {
         'Content-Type': "application/x-www-form-urlencoded",
         'cache-control': "no-cache"
     }
 
     def __init__(self, settings):
-
         if "key" not in settings:
             raise Exception('Make sure to pass in the key as mandatory parameter')
 
@@ -83,9 +81,7 @@ class HatebaseAPI:
             format:     format of the response (currently only json)
 
         Returns:
-            response:   the full json response
-            request_id: the request_id of the response
-            expires_on: the expiry date
+            response:   the full json response, according to hatebase api
         """
 
         url = self.base_url + '/' + self.version + '/analyze'
@@ -97,12 +93,12 @@ class HatebaseAPI:
         if self.debug == True:
             print("response: {}".format(response))
         resp_json = response.json()
-        return resp_json, resp_json["request_id"], resp_json["expires_on"]
+        return resp_json
 
     def getAnalysis(self, filters, format="json"):
         """getAnalysis gets the analysis results of a previously performed analyze query.
 
-        (From hatebase-api documentation: he /get_analysis endpoint retrieves the assessment
+        (From hatebase-api documentation: the /get_analysis endpoint retrieves the assessment
         initiated with a prior query to the /analyze endpoint. Analysis can take anywhere
         from a few minutes to a couple hours, depending on the complexity of the content
         and the volume of traffic at the time of request.
@@ -143,10 +139,6 @@ class HatebaseAPI:
 
         Returns:
             response:   the full json response according to the hatebase api.
-            vocabulary: a list of vocabulary entries (each entry is a dict) for the current page
-            pages:      the total number of result_pages for this query
-            results:    the total numvber of results (vocabulary entries) for this query
-            language:   the language of the vocabulary
         """
 
         url = self.base_url + '/' + self.version + '/get_vocabulary'
@@ -158,8 +150,7 @@ class HatebaseAPI:
         if self.debug == True:
             print("response: {}".format(response))
         resp_json = response.json()
-        return resp_json, resp_json["result"], resp_json["number_of_pages"], \
-               resp_json["number_of_results"], resp_json["language"]
+        return resp_json
 
     def getVocabularyDetails(self, filters, format="json"):
         """gets the details of the requested vocabulary_id

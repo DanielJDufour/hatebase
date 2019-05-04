@@ -1,5 +1,6 @@
 # hatebase
 Python Version of Andrew Welter's Hatebase Wrapper
+Using the current 4.2 Version of the Hatebase API
 
 # Install
 ```
@@ -11,38 +12,98 @@ pip install hatebase
 pip install requests
 ```
 
-# Examples
-#### Get All the Hate Speech in English About Nationality 
+# HatebaseAPI functions
+### Initialize HatebaseAPI class
 ```
-from json import loads
+hatebase = HatebaseAPI({"key": key})
+# for more details, set debug to True
+hatebase = HatebaseAPI({"key": key, "debug": True})
+```
+
+### HatebaseAPI getVocabulary
+```
+# set filters for vocabulary query
+filters = {"language": "eng"}
+format = "json"
+
+response = hatebase.getVocabulary(filters=filters, format=format)
+
+# get some details from response
+vocablist = response["result"]
+results = response["number_of_results"]
+pages = response["number_of_pages"]
+```
+
+### HatebaseAPI getVocabularyDetails
+``` 
+format = "json"
+details_filters = {'vocabulary_id': vocab_id}
+
+response = hatebase.getVocabularyDetails(filters=details_filters, format=format)
+```
+
+### HatebaseAPI getSightings
+``` 
+filters = {'is_about_nationality': '1', 'language': 'eng', 'country_id': 'US'}
+format = "json"
+
+response = hatebase.getSightings(filters=filters, format=format)
+```
+
+### HatebaseAPI analyze
+``` 
+# TBD
+```
+### HatebaseAPI getAnalysis
+``` 
+# TBD
+```
+
+# Examples
+#### Get All the Hate Speech in English About Nationality in the US
+```
+import json
+import requests
 from hatebase import HatebaseAPI
 
 hatebase = HatebaseAPI({"key": key})
-filters = {'about_nationality': '1', 'language': 'eng'}
-output = "json"
-query_type = "sightings"
-response = hatebase.performRequest(filters, output, query_type)
-
-# convert to Python object
-response = loads(response)
+filters = {'is_about_nationality': '1', 'language': 'eng', 'country_id': 'US'}
+format = "json"
+json_response = hatebase.getSightings(filters=filters, format=format)
 ```
 
 #### Get All Arabic Vocabulary
 ```
-from json import loads
+from json 
+import requests
+import pandas as pd
 from hatebase import HatebaseAPI
 
 hatebase = HatebaseAPI({"key": key})
 filters = {"language": "ara"}
-output = "json"
-query_type = "vocabulary"
-response = hatebase.performRequest(filters, output, query_type)
+format = "json"
+# initialize list for all vocabulary entry dictionaries
+ara_vocab = []
+response = hatebase.getVocabulary(filters=filters, format=format)
+pages = response["number_of_pages"]
+# fill the vocabulary list with all entries of all pages
+# this might take some time...
+for page in range(1, pages+1):
+    filters["page"] = str(page) 
+    response = hatebase.getVocabulary(filters=filters, format=format)
+    ara_vocab.append(response["result"])
 
-# convert to Python object
-response = loads(response)
+# create empty pandas df for all vocabulary entries
+df_ara_vocab = pd.DataFrame()
+# fill df
+for elem in ara_vocab:
+    df_ara_vocab = df_ara_vocab.append(elem)
+# reset the df index
+df_ara_vocab.reset_index(drop=True, inplace=True)    
 ```
 
-For more documentation on the API check out https://www.hatebase.org/connect_api
+For more documentation on the API check out https://github.com/hatebase/Hatebase-API-Docs
+
 
 # Testing
 To test the package run

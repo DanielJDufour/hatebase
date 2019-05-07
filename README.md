@@ -15,6 +15,8 @@ pip install requests
 # HatebaseAPI functions
 ### Initialize HatebaseAPI class
 ```
+from hatebase import HatebaseAPI
+key = 'yourHatebaseAPIKeyString'
 hatebase = HatebaseAPI({"key": key})
 # for more details, set debug to True
 hatebase = HatebaseAPI({"key": key, "debug": True})

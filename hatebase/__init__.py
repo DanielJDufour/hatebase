@@ -16,7 +16,7 @@ class HatebaseAPI:
     """
     base_url = 'https://api.hatebase.org'
     key = None
-    version = '4-2'
+    version = '4-4'
     token = None
     debug = False
     headers = {

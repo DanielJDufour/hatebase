@@ -1,12 +1,20 @@
 from distutils.core import setup
+from os import path
+
+this_directory = path.abspath(path.dirname(__file__))
+
+with open(path.join(this_directory, 'README.md')) as f:
+    long_description = f.read()
 
 setup(
   name = 'hatebase',
   packages = ['hatebase'],
   package_dir = {'hatebase': 'hatebase'},
   package_data = {'hatebase': ['__init__.py', 'tests/__init__.py', 'tests/test.py']},
-  version = '1.0.0',
+  version = '1.0.1',
   description = "Python Version of Andrew Welter's Hatebase Wrapper, based on DanielJDufour's implementation",
+  long_description = long_description,
+  long_description_content_type='text/markdown',
   author = 'Daniel J. Dufour & Alexander Meier',
   author_email = 'daniel.j.dufour@gmail.com',
   url = 'https://github.com/DanielJDufour/hatebase',

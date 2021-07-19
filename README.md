@@ -3,18 +3,18 @@ Python Version of Andrew Welter's Hatebase Wrapper
 Using the current 4.2 Version of the Hatebase API
 
 # Install
-```
+```bash
 pip install hatebase
 ```
 
 # Requirements
-```
+```bash
 pip install requests
 ```
 
 # HatebaseAPI functions
 ### Initialize HatebaseAPI class
-```
+```py
 from hatebase import HatebaseAPI
 key = 'yourHatebaseAPIKeyString'
 hatebase = HatebaseAPI({"key": key})
@@ -23,7 +23,7 @@ hatebase = HatebaseAPI({"key": key, "debug": True})
 ```
 
 ### HatebaseAPI getVocabulary
-```
+```py
 # set filters for vocabulary query
 filters = {"language": "eng"}
 format = "json"
@@ -37,7 +37,7 @@ pages = response["number_of_pages"]
 ```
 
 ### HatebaseAPI getVocabularyDetails
-``` 
+```py
 format = "json"
 details_filters = {'vocabulary_id': vocab_id}
 
@@ -45,7 +45,7 @@ response = hatebase.getVocabularyDetails(filters=details_filters, format=format)
 ```
 
 ### HatebaseAPI getSightings
-``` 
+```py
 filters = {'is_about_nationality': '1', 'language': 'eng', 'country_id': 'US'}
 format = "json"
 
@@ -63,7 +63,7 @@ response = hatebase.getSightings(filters=filters, format=format)
 
 # Examples
 #### Get All the Hate Speech in English About Nationality in the US
-```
+```py
 import json
 import requests
 from hatebase import HatebaseAPI
@@ -75,7 +75,7 @@ json_response = hatebase.getSightings(filters=filters, format=format)
 ```
 
 #### Get All Arabic Vocabulary
-```
+```py
 from json 
 import requests
 import pandas as pd
@@ -109,6 +109,6 @@ For more documentation on the API check out https://github.com/hatebase/Hatebase
 
 # Testing
 To test the package run
-```
+```bash
 python -m unittest hatebase.tests.test
 ```

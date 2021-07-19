@@ -56,10 +56,8 @@ class HatebaseAPI:
         except KeyError as e:
             print("Please check your API-Key, Authentication did nod respond with a token.")
 
-        if token is not None:
+        if self.token is None:
             self.token = response.json()["result"]["token"]
-        else:
-            raise Exception('Authentication failed for some reason')
 
         if self.debug == True:
             print("response text: {}".format(response.text))
@@ -177,6 +175,14 @@ class HatebaseAPI:
         if self.debug == True:
             print("response: {}".format(response))
         resp_json = response.json()
+
+        # try to fix typing issues
+        if "number_of_results" in resp_json and isinstance(resp_json["number_of_results"], str) and resp_json["number_of_results"].isdigit():
+            try:
+                resp_json["number_of_results"] = int(resp_json["number_of_results"])
+            except:
+                pass
+
         return resp_json
 
     def getSightings(self, filters, format="json"):
@@ -197,6 +203,10 @@ class HatebaseAPI:
         """
 
         url = self.base_url + '/' + self.version + '/get_sightings'
+
+        if "year" not in filters:
+            raise Exception("You must provide a year to getSightings")
+
         payload = "token=" + self.token + "&format=" + format + "&" + self.format_query(filters)
         if self.debug == True:
             print("url: {}\npayload: {}".format(url, payload))
@@ -205,12 +215,20 @@ class HatebaseAPI:
         if self.debug == True:
             print("response: {}".format(response))
         resp_json = response.json()
+
+        # try to fix typing issues
+        if "number_of_results" in resp_json and isinstance(resp_json["number_of_results"], str) and resp_json["number_of_results"].isdigit():
+            try:
+                resp_json["number_of_results"] = int(resp_json["number_of_results"])
+            except:
+                pass
+
         return resp_json
 
     def format_query(self, parameters, primary='=', secondary='&'):
 
         query = ""
         for key, value in parameters.items():
-            pair = [quote(key), quote(value)]
+            pair = [quote(key), quote(str(value))]
             query += primary.join(pair) + secondary
         return query.rstrip(secondary)

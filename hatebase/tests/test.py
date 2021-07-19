@@ -15,19 +15,19 @@ class TestSightings(unittest.TestCase):
             key = raw_input("What's your API Key?\n")
 
         hatebase = HatebaseAPI({"key": key, "debug": False})
-        filters = {'is_about_nationality': '1', 'language': 'eng', 'country_id': 'US'}
+        filters = { 'year': 2018, 'is_about_nationality': '1', 'language': 'eng', 'country_id': 'US',}
         output = "json"
         # get sightings
         response = hatebase.getSightings(filters=filters, format=output)
+
         # get some details from response
-        results = response["number_of_results"]
-        pages = response["number_of_pages"]
 
         if hatebase.debug == True:
             print(response)
-        self.assertEqual(response["token"], hatebase.token)
-        self.assertTrue(int(pages) > 500)
-        self.assertTrue(int(results) > 54239)
+        
+        self.assertEqual(response["query"]["token"], hatebase.token)
+        self.assertGreaterEqual(int(response["number_of_pages"]), 20)
+        self.assertGreaterEqual(int(response["number_of_results"]), 1000)
 
     def test_vocabulary(self):
 
@@ -41,17 +41,18 @@ class TestSightings(unittest.TestCase):
         format = "json"
         # get vocabulary
         response = hatebase.getVocabulary(filters=filters, format=format)
+
         # get some details from response
         vocablist = response["result"]
         results = response["number_of_results"]
         pages = response["number_of_pages"]
-        lang = response["language"]
+        lang = response["query"]["language"]
 
         if hatebase.debug == True:
             print("len(vocab): {}, # of pages: {}, # of results: {}, lang: {}".format(len(vocablist), pages, results, lang))
-        self.assertEqual(response["token"], hatebase.token)
-        self.assertTrue(int(results) >= 18)
-        self.assertEqual(int(response['number_of_results']), int(results))
+        self.assertEqual(response["query"]["token"], hatebase.token)
+        self.assertGreaterEqual(int(results), 18)
+        self.assertGreaterEqual(int(response['number_of_results']), int(results))
 
     def test_vocabulary_details(self):
         if python_version == 3:
@@ -74,7 +75,7 @@ class TestSightings(unittest.TestCase):
         if hatebase.debug == True:
             print(response)
 
-        self.assertEqual(response["token"], hatebase.token)
+        self.assertEqual(response["query"]["token"], hatebase.token)
         self.assertEqual(vocab_id, resp_vocab_id)
 
 ## currently untested remain the following endpoints: /analyze and /get_analysis

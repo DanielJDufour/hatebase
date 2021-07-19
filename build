@@ -3,8 +3,15 @@
 # wipe away any previous builds
 rm -fr dist
 
+# upgrade pipe if possible
+python3 -m pip install --upgrade pip
+
 # make sure libraries used for publishing are up to date
 python3 -m pip install --user --upgrade setuptools wheel twine
 python3 -m pip install --upgrade twine
 
 python3 setup.py sdist
+
+python3 -m pip install --upgrade twine
+
+python3 -m twine check dist/*

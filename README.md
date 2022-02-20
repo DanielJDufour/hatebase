@@ -1,3 +1,7 @@
+**archive notice**  
+Although Hatebase remains an active project, it's transitioned from a back-end service to a front-end service, and thus no longer offers an API.
+
+===================================================== 
 # hatebase
 Python Version of Andrew Welter's Hatebase Wrapper
 Using the current 4.2 Version of the Hatebase API
